@@ -1,88 +1,61 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    
-    const backendURL = 'https://productjs-server-production-6f0b.up.railway.app/products';
-
-    fetch(backendURL)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Network response sahi nahi tha');
-        }
-        return res.json();
-      })
+    // Apka working Railway link
+    fetch('https://productjs-server-production-6f0b.up.railway.app/products')
+      .then((res) => res.json())
       .then((data) => {
-        console.log("Data mil gaya:", data);
         setProducts(data);
         setLoading(false);
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        setError("Backend se data nahi mil raha. Check karein ke server on hai.");
         setLoading(false);
       });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <h2 className="text-2xl font-bold">Data load ho raha hai...</h2>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen text-red-500">
-        <h2 className="text-xl">{error}</h2>
-      </div>
-    );
-  }
+  if (loading) return <div className="text-center mt-20 font-sans">Loading...</div>;
 
   return (
-    <div className="p-10 bg-gray-50 min-h-screen font-sans">
-      <h1 className="text-4xl font-extrabold mb-10 text-center text-gray-800">
-        Welcome to Our Shop
-      </h1>
+    <div className="bg-white min-h-screen p-10 font-sans">
+      {/* Heading */}
+      <h1 className="text-3xl font-bold mb-10 text-left ml-4">Our Shop</h1>
       
-      {/* Products Grid */}
-      <div className="flex flex-wrap gap-8 justify-center">
-        {products.length > 0 ? (
-          products.map((p) => (
-            <div key={p.id} className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 w-80 transform transition hover:scale-105">
-              {/* Image Section */}
+      {/* Grid Layout - Jaisa aapne manga tha */}
+      <div className="flex flex-wrap gap-8 justify-start ml-4">
+        {products.map((p) => (
+          <div key={p.id} className="w-72 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+            
+            {/* Image Box */}
+            <div className="h-48 bg-gray-100">
               <img 
                 src={p.imageURL} 
                 alt={p.title} 
-                className="w-full h-48 object-cover rounded-xl mb-4" 
+                className="w-full h-full object-cover"
+                onError={(e) => { e.target.src = "https://via.placeholder.com/300"; }}
               />
+            </div>
+            
+            {/* Text Content - Left Aligned */}
+            <div className="p-5 text-left">
+              <h2 className="text-xl font-bold text-gray-800">{p.title}</h2>
+              <p className="text-blue-600 font-semibold text-lg mt-1">${p.price}</p>
               
-              {/* Content Section */}
-              <h2 className="text-2xl font-bold mb-2 text-gray-800">{p.title}</h2>
-              <p className="text-gray-500 text-sm mb-4 h-12 overflow-hidden">
+              <p className="text-gray-500 text-sm mt-2 line-clamp-2">
                 {p.description}
               </p>
               
-              <div className="flex justify-between items-center mt-4">
-                <span className="text-2xl font-bold text-blue-600">${p.price}</span>
-                <Link 
-                  to={`/product/${p.id}`} 
-                  className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
-                >
-                  View details
-                </Link>
-              </div>
+              {/* Button - Black & Rounded */}
+              <button className="mt-5 w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-800 transition text-sm">
+                View Details
+              </button>
             </div>
-          ))
-        ) : (
-          <p className="text-lg text-gray-600">Koi products nahi mile.</p>
-        )}
+          </div>
+        ))}
       </div>
     </div>
   );
