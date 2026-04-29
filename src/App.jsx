@@ -7,7 +7,7 @@ function App() {
 
   useEffect(() => {
     // Yahan apna sahi Railway URL dalein aur aakhir mein /products lazmi lagayein
-    fetch('https://productjs-server-production-6f0b.up.railway.app/')
+    fetch('https://productjs-server-production-6f0b.up.railway.app/products')
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
