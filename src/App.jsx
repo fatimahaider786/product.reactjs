@@ -4,56 +4,84 @@ import { Link } from "react-router-dom";
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Yahan apna sahi Railway URL dalein aur aakhir mein /products lazmi lagayein
-    fetch('https://productjs-server-production-6f0b.up.railway.app/products')
-      .then((res) => res.json())
+    
+    const backendURL = 'https://productjs-server-production-6f0b.up.railway.app/products';
+
+    fetch(backendURL)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Network response sahi nahi tha');
+        }
+        return res.json();
+      })
       .then((data) => {
+        console.log("Data mil gaya:", data);
         setProducts(data);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Data mangwane mein galti hui:", err);
+        console.error("Fetch error:", err);
+        setError("Backend se data nahi mil raha. Check karein ke server on hai.");
         setLoading(false);
       });
   }, []);
 
   if (loading) {
-    return <div className="text-center mt-20">Data load ho raha hai...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <h2 className="text-2xl font-bold">Data load ho raha hai...</h2>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-500">
+        <h2 className="text-xl">{error}</h2>
+      </div>
+    );
   }
 
   return (
-    <div className="p-10 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-center">Our Shop</h1>
+    <div className="p-10 bg-gray-50 min-h-screen font-sans">
+      <h1 className="text-4xl font-extrabold mb-10 text-center text-gray-800">
+        Welcome to Our Shop
+      </h1>
       
-      <div className="flex flex-wrap gap-6 justify-center">
+      {/* Products Grid */}
+      <div className="flex flex-wrap gap-8 justify-center">
         {products.length > 0 ? (
           products.map((p) => (
-            <div key={p.id} className="bg-white p-5 rounded-lg shadow-lg border w-72">
-              {/* Image dikhane ke liye */}
+            <div key={p.id} className="bg-white p-6 rounded-2xl shadow-xl border border-gray-100 w-80 transform transition hover:scale-105">
+              {/* Image Section */}
               <img 
                 src={p.imageURL} 
                 alt={p.title} 
-                className="w-full h-40 object-cover rounded-md mb-4" 
+                className="w-full h-48 object-cover rounded-xl mb-4" 
               />
               
-              {/* Backend mein 'title' hai */}
-              <h2 className="text-xl font-bold mb-2">{p.title}</h2>
+              {/* Content Section */}
+              <h2 className="text-2xl font-bold mb-2 text-gray-800">{p.title}</h2>
+              <p className="text-gray-500 text-sm mb-4 h-12 overflow-hidden">
+                {p.description}
+              </p>
               
-              {/* Backend mein 'description' hai */}
-              <p className="text-gray-600 text-sm mb-4">{p.description}</p>
-              
-              <Link 
-                to={`/product/${p.id}`} 
-                className="block text-center bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition"
-              >
-                View Details
-              </Link>
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-2xl font-bold text-blue-600">${p.price}</span>
+                <Link 
+                  to={`/product/${p.id}`} 
+                  className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
+                >
+                  View details
+                </Link>
+              </div>
             </div>
           ))
         ) : (
-          <p>Koi products nahi mile.</p>
+          <p className="text-lg text-gray-600">Koi products nahi mile.</p>
         )}
       </div>
     </div>
