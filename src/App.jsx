@@ -4,12 +4,14 @@ import { Link } from "react-router";
 function App() {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    fetch("https://productjs-server-production-6f0b.up.railway.app/products")
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
-      .catch((err) => console.log("Error:", err));
-  }, []);
+useEffect(() => {
+  fetch("https://productjs-server-production-6f0b.up.railway.app/products")
+    .then((res) => res.json())
+    .then((data) => {
+      setProducts(data);
+    })
+    .catch((err) => console.log("Error:", err));
+}, []);
 
   return (
     <div className="p-10 bg-gray-100 min-h-screen">
