@@ -9,7 +9,7 @@ function CardDetail() {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const res = await axios.get("http://localhost:5050/products");
+        const res = await axios.get('https://productjs-server-production-6f0b.up.railway.app/products');
         setBackendCards(res.data);
       } catch (err) {
         console.error("Error fetching cards:", err);
