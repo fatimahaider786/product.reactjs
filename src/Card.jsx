@@ -18,7 +18,6 @@ function Card() {
   return (
     <div className="p-10 bg-gray-50 min-h-screen flex flex-col items-center">
       
-      {/* Upper Section: Frontend Static Card (Jaisa aapki pic mein hai) */}
       <div className="max-w-md bg-white border rounded-lg shadow-md p-5 mb-10">
         <img 
           className="rounded-lg w-full h-60 object-cover" 
@@ -33,7 +32,6 @@ function Card() {
 
       <hr className="w-full border-gray-300 my-5" />
 
-      {/* Lower Section: Products from Backend */}
       <div className="text-center w-full">
         <h3 className="text-xl font-bold mb-4">Products from Backend</h3>
         
@@ -41,7 +39,6 @@ function Card() {
           <div className="bg-white p-5 border rounded inline-block shadow-sm">
              <h4 className="font-bold text-lg">{backendData.title}</h4>
              <p className="text-blue-600">${backendData.price}</p>
-             {/* Backend wali image agar dikhani hai */}
              <img src={backendData.imageURL} className="w-32 h-32 mx-auto mt-2" alt="backend" />
           </div>
         ) : (
