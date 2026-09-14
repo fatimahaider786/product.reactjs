@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router"; 
+import { useParams, Link } from "react-router";
 import axios from "axios";
 
 function Card() {
@@ -9,8 +9,7 @@ function Card() {
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        // Local testing ke liye localhost URL, bad mein live URL laga dena
-        const res = await axios.get('http://localhost:5050/products');
+        const res = await axios.get('https://product-reactjs-beckend.vercel.app/products');
         setBackendCards(res.data);
       } catch (err) {
         console.error("Error fetching cards:", err);
@@ -36,26 +35,32 @@ function Card() {
     },
   ];
 
-  const productInfo = products.find((p) => p.id === parseInt(id));
-
-  if (!productInfo) return <h2 className="text-center mt-10">Product Not Found</h2>;
+  // Agar id mojood hogi tab hi product find karega, warna crash nahi hoga
+  const productInfo = id ? products.find((p) => p.id === parseInt(id)) : null;
 
   return (
     <div className="p-10 bg-gray-50 min-h-screen">
-      <div className="flex justify-center mb-10">
-        <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md p-5">
-          <img src={productInfo.imgURL} alt={productInfo.name} className="rounded-lg w-full h-48 object-cover" />
-          <h5 className="mt-4 text-2xl font-bold">{productInfo.name}</h5>
-          <p className="text-gray-700">{productInfo.desc}</p>
-          <p className="text-3xl font-extrabold mt-2">${productInfo.price}</p>
-          <Link to="/" className="text-blue-600 hover:underline block mt-4">← Back to Shop</Link>
+      {/* Agar URL mein ID hai tab hi single product view dikhaye ga */}
+      {id && productInfo && (
+        <div className="flex justify-center mb-10">
+          <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md p-5">
+            <img src={productInfo.imgURL} alt={productInfo.name} className="rounded-lg w-full h-48 object-cover" />
+            <h5 className="mt-4 text-2xl font-bold">{productInfo.name}</h5>
+            <p className="text-gray-700">{productInfo.desc}</p>
+            <p className="text-3xl font-extrabold mt-2">${productInfo.price}</p>
+            <Link to="/" className="text-blue-600 hover:underline block mt-4">← Back to Shop</Link>
+          </div>
         </div>
-      </div>
+      )}
+
+      {id && !productInfo && (
+        <h2 className="text-center mt-10 text-xl font-semibold text-red-500">Product Not Found</h2>
+      )}
 
       <hr className="my-10" />
 
       {/* Backend Data Display */}
-      <h3 className="text-center text-xl font-bold mb-5">Products from Backend</h3>
+      <h3 className="text-center text-xl font-bold mb-5">Products from Live Backend</h3>
       <div className="flex flex-wrap justify-center gap-6">
         {backendCards.length > 0 ? (
           backendCards.map((pr) => (
@@ -74,7 +79,7 @@ function Card() {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">Loading backend data or make sure server is running...</p>
+          <p className="text-gray-500">Loading backend data from server...</p>
         )}
       </div>
     </div>
