@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router"; 
 import axios from "axios";
 
-function CardDetail() {
+function Card() {
   const [backendCards, setBackendCards] = useState([]);
   const { id } = useParams();
   
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const res = await axios.get('https://productjs-server-production-6f0b.up.railway.app/products');
+        // Local testing ke liye localhost URL, bad mein live URL laga dena
+        const res = await axios.get('http://localhost:5050/products');
         setBackendCards(res.data);
       } catch (err) {
         console.error("Error fetching cards:", err);
@@ -18,7 +19,6 @@ function CardDetail() {
     fetchCards();
   }, []);
 
-  
   const products = [
     {
       id: 1,
@@ -42,7 +42,6 @@ function CardDetail() {
 
   return (
     <div className="p-10 bg-gray-50 min-h-screen">
-    
       <div className="flex justify-center mb-10">
         <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md p-5">
           <img src={productInfo.imgURL} alt={productInfo.name} className="rounded-lg w-full h-48 object-cover" />
@@ -69,17 +68,17 @@ function CardDetail() {
               <h4 className="font-bold mt-2 capitalize">{pr.title}</h4>
               <p className="text-sm text-gray-600">{pr.description}</p>
               <div className="mt-4 flex gap-2">
-                <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm">Update</button>
-                <button className="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+                <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm cursor-pointer hover:bg-blue-700">Update</button>
+                <button className="bg-red-500 text-white px-3 py-1 rounded text-sm cursor-pointer hover:bg-red-600">Delete</button>
               </div>
             </div>
           ))
         ) : (
-          <p>No backend data found. Make sure server is running on port 5050.</p>
+          <p className="text-gray-500">Loading backend data or make sure server is running...</p>
         )}
       </div>
     </div>
   );
 }
 
-export default CardDetail;
+export default Card;
